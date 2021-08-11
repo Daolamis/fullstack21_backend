@@ -40,6 +40,21 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const person = phonebook.find(p => p.id === id);
+  if (person) {
+    phonebook = phonebook.filter(p => p.id !== id);
+    console.log(`person ${person.name} was deleted`)
+    res.status(204).end();
+  } else {
+    res.status(404).end();
+  }
+});
+
+
+
+
 app.get('/info', (req, res) => {
   res.send(
     ` <!DOCTYPE html>
