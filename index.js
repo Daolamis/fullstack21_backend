@@ -1,6 +1,7 @@
 const express = require('express');
 
 const app = express();
+app.use(express.json());
 
 let phonebook = [
   {
@@ -25,6 +26,9 @@ let phonebook = [
   }
 ];
 
+const generateId = () => {
+  return Math.floor(Math.random()*10000);
+}
 
 app.get('/api/persons', (req, res) => {
   res.json(phonebook);
@@ -52,6 +56,13 @@ app.delete('/api/persons/:id', (req, res) => {
   }
 });
 
+app.post('/api/persons', (req, res) => {
+  const newPerson = req.body;
+  newPerson.id = generateId();
+  phonebook = phonebook.concat(newPerson);
+
+  res.json(newPerson);
+});
 
 
 
