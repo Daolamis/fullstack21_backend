@@ -27,7 +27,7 @@ let phonebook = [
 ];
 
 const generateId = () => {
-  return Math.floor(Math.random()*10000);
+  return Math.floor(Math.random() * 10000);
 }
 
 app.get('/api/persons', (req, res) => {
@@ -58,6 +58,15 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const newPerson = req.body;
+  if (!newPerson || !newPerson.name || !newPerson.number) {
+    return res.status(400).json({ "error": "person's name or number was missing" }
+    );
+  }
+
+  if (phonebook.find(p => p.name === newPerson.name)) {
+    return res.status(409 ).json({ "error": "name must be unique" });
+  }
+
   newPerson.id = generateId();
   phonebook = phonebook.concat(newPerson);
 
