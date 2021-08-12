@@ -1,9 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
 
+morgan.token('post_data', (req) => req.method === 'POST' ? JSON.stringify(req.body, null, 2) : null);
+
 const app = express();
-app.use(morgan('tiny'));
 app.use(express.json());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post_data'));
 
 let phonebook = [
   {
@@ -66,7 +68,7 @@ app.post('/api/persons', (req, res) => {
   }
 
   if (phonebook.find(p => p.name === newPerson.name)) {
-    return res.status(409 ).json({ "error": "name must be unique" });
+    return res.status(409).json({ "error": "name must be unique" });
   }
 
   newPerson.id = generateId();
