@@ -1,6 +1,8 @@
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
+app.use(morgan('tiny'));
 app.use(express.json());
 
 let phonebook = [
@@ -49,7 +51,7 @@ app.delete('/api/persons/:id', (req, res) => {
   const person = phonebook.find(p => p.id === id);
   if (person) {
     phonebook = phonebook.filter(p => p.id !== id);
-    console.log(`person ${person.name} was deleted`)
+    //console.log(`person ${person.name} was deleted`)
     res.status(204).end();
   } else {
     res.status(404).end();
@@ -70,7 +72,7 @@ app.post('/api/persons', (req, res) => {
   newPerson.id = generateId();
   phonebook = phonebook.concat(newPerson);
 
-  res.json(newPerson);
+  res.status(201).json(newPerson);
 });
 
 
@@ -88,5 +90,5 @@ app.get('/info', (req, res) => {
 
 const PORT = 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`);
 });
