@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const Person = require('./models/person');
 
-morgan.token('post_data', (req) => req.method === 'POST' ? JSON.stringify(req.body) : null);
+morgan.token('post_data', (req) => req.body ? JSON.stringify(req.body) : null);
 
 const app = express();
 app.use(express.json());
@@ -54,7 +54,22 @@ app.post('/api/persons', (req, res, next) => {
     .then(savedPerson => {
       res.status(201).json(savedPerson);
     })
-    .catch(next)
+    .catch(next);
+});
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body;
+  if (!body || !body.number) {
+    return res.status(400).json({ "error": "person's number was missing" }
+    );
+  }
+
+  Person.findByIdAndUpdate(req.params.id, { number: body.number }, { new: true })
+    .then(savedPerson => {
+      console.log('saved person', savedPerson);
+      res.status(201).json(savedPerson);
+    })
+    .catch(next);
 });
 
 app.get('/info', (req, res) => {
