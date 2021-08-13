@@ -12,10 +12,12 @@ app.use(express.static('build'));
 app.use(cors());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post_data'));
 
-app.get('/api/persons', (req, res) => {
-  Person.find({}).then(persons => {
-    res.json(persons);
-  });
+app.get('/api/persons', (req, res, next) => {
+  Person.find({})
+    .then(persons => {
+      res.json(persons);
+    })
+    .catch(next);
 });
 
 app.get('/api/persons/:id', (req, res) => {
@@ -28,7 +30,7 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then(result => {
       if (result !== null) {
@@ -37,12 +39,10 @@ app.delete('/api/persons/:id', (req, res) => {
         res.status(404).end();
       }
     })
-    .catch(error => {
-      res.status(500).json(error);
-    })
+    .catch(next);
 });
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const newPerson = req.body;
   if (!newPerson || !newPerson.name || !newPerson.number) {
     return res.status(400).json({ "error": "person's name or number was missing" }
@@ -50,9 +50,11 @@ app.post('/api/persons', (req, res) => {
   }
 
   const person = new Person({ name: newPerson.name, number: newPerson.number });
-  person.save().then(savedPerson => {
-    res.status(201).json(savedPerson);
-  })
+  person.save()
+    .then(savedPerson => {
+      res.status(201).json(savedPerson);
+    })
+    .catch(next)
 });
 
 app.get('/info', (req, res) => {
@@ -65,6 +67,18 @@ app.get('/info', (req, res) => {
         </body>
       </html>`);
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
