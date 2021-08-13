@@ -10,13 +10,15 @@
     "build:ui": "rm -rf build && cd ../fullstack21/osa2/puhelinluettelo/ && npm run build --prod && cp -r build ../../../fullstack21_backend",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Daolamis/fullstack21_backend.git"
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
