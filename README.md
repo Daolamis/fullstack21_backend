@@ -1,5 +1,5 @@
 # fullstack21_backend
-Full stack open 21 backend harjoituksia
+Full stack open 21 backend practises
 
 
 GUI in Heroku https://floating-badlands-68906.herokuapp.com/

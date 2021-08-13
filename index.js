@@ -47,7 +47,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
   const newPerson = req.body;
   if (!newPerson || !newPerson.name || !newPerson.number) {
-    return res.status(400).json({ "error": "person's name or number was missing" }
+    return res.status(400).json({ error: 'person\'s name or number was missing' }
     );
   }
 
@@ -62,7 +62,7 @@ app.post('/api/persons', (req, res, next) => {
 app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body;
   if (!body || !body.number) {
-    return res.status(400).json({ "error": "person's number was missing" }
+    return res.status(400).json({ error: 'person\'s number was missing' }
     );
   }
 
@@ -100,7 +100,7 @@ const errorHandler = (error, request, response, next) => {
   }
 
   next(error);
-}
+};
 
 app.use(errorHandler);
 
