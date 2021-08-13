@@ -1,13 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const Person = require('./models/person');
 
 morgan.token('post_data', (req) => req.method === 'POST' ? JSON.stringify(req.body) : null);
 
 const app = express();
+app.use(express.json());
 app.use(express.static('build'));
 app.use(cors());
-app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post_data'));
 
 let phonebook = [
@@ -38,7 +40,9 @@ const generateId = () => {
 }
 
 app.get('/api/persons', (req, res) => {
-  res.json(phonebook);
+  Person.find({}).then(persons => {
+    res.json(persons);
+  });
 });
 
 app.get('/api/persons/:id', (req, res) => {
