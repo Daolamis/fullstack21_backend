@@ -20,14 +20,16 @@ app.get('/api/persons', (req, res, next) => {
     .catch(next);
 });
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = phonebook.find(p => p.id === id);
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+app.get('/api/persons/:id', (req, res, next) => {
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
 });
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -72,15 +74,19 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(next);
 });
 
-app.get('/info', (req, res) => {
-  res.send(
-    ` <!DOCTYPE html>
-      <html lang="en">
-        <head><title>Info</title></head>
-        <body>
-          Phonebook has info for ${phonebook.length} people <br> ${new Date()} 
-        </body>
-      </html>`);
+app.get('/info', (req, res, next) => {
+  Person.find({})
+    .then(persons => {
+      res.send(
+        ` <!DOCTYPE html>
+          <html lang="en">
+            <head><title>Info</title></head>
+            <body>
+              Phonebook has info for ${persons.length} people <br> ${new Date()} 
+            </body>
+          </html>`);
+    })
+    .catch(next);
 });
 
 const errorHandler = (error, request, response, next) => {
